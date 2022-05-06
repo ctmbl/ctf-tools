@@ -10,7 +10,7 @@ def solve(x):
 def round_left(x, nb_bits=63):
     return ((x << 1) % (0b1 << nb_bits)) + (x >> nb_bits-1)
 
-def solve_it():
+def force_it():
     for i in range(1<<63):
         if i % (1<<61) == 0:
             print(i)
@@ -18,3 +18,17 @@ def solve_it():
             print(i)
             return
 
+def is_set(x, n):
+    return 1 if (x & 2 ** n != 0) else 0
+
+def incr_gate1(x, n):
+    return 1 if (is_set(x,n) and not is_set(x, n+1)) else 0
+
+def next_x(y, seed):
+    return is_set(y,seed[1]) ^ incr_gate1(seed[0], seed[1]-2)    
+
+def solve_it(y,seed):
+    while seed[1] != 63:
+        seed[0] += next_x(y,seed) << seed[1]
+        seed[1] += 1
+    print(seed)
